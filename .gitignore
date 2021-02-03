@@ -24,3 +24,4 @@ CSD1130_Asteroids/CSD1130_Asteroids/x64/Debug/GameStateMgr.obj
 CSD1130_Asteroids/CSD1130_Asteroids/x64/Debug/Main.obj
 CSD1130_Asteroids/CSD1130_Asteroids/x64/Debug/vc142.idb
 CSD1130_Asteroids/CSD1130_Asteroids/x64/Debug/vc142.pdb
+*.ipch
