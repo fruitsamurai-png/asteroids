@@ -13,7 +13,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 /******************************************************************************/
 
 #include "main.h"
-
+#include "GameState_Asteroids.h"
 // ---------------------------------------------------------------------------
 // globals
 
@@ -63,7 +63,12 @@ void GameStateMgrUpdate()
 	switch (gGameStateCurr)
 	{
 	case GS_ASTEROIDS:
-		
+		GameStateLoad = GameStateAsteroidsLoad;
+		GameStateInit = GameStateAsteroidsInit;
+		GameStateUpdate = GameStateAsteroidsUpdate;
+		GameStateDraw=GameStateAsteroidsDraw;
+		GameStateFree = GameStateAsteroidsFree;
+		GameStateUnload = GameStateAsteroidsUnload;
 		break;
 	default:
 		AE_FATAL_ERROR("invalid state!!");
