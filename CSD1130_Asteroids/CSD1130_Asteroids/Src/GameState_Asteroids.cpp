@@ -13,7 +13,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 /******************************************************************************/
 
 #include "main.h"
-
+#include <iostream>
 /******************************************************************************/
 /*!
 	Defines
@@ -30,7 +30,8 @@ const float			SHIP_ACCEL_BACKWARD		= 40.0f;		// ship backward acceleration (in m
 const float			SHIP_ROT_SPEED			= (2.0f * PI);	// ship rotation speed (degree/second)
 
 const float			BULLET_SPEED			= 100.0f;		// bullet speed (m/s)
-
+extern float	 g_dt;
+extern double	 g_appTime;
 // -----------------------------------------------------------------------------
 enum TYPE
 {
@@ -213,6 +214,8 @@ void GameStateAsteroidsUpdate(void)
 		AEVec2Add(&spShip->posCurr, &spShip->posCurr, &added);//YOU MAY NEED TO CHANGE/REPLACE THIS LINE
 
 		// Find the velocity according to the acceleration
+		spShip->velCurr.y = SHIP_ACCEL_FORWARD * g_dt + spShip->velCurr.y;
+		spShip->posCurr.y = spShip->velCurr.y * g_dt + spShip->posCurr.y;
 		// Limit your speed over here
 	}
 
@@ -223,6 +226,8 @@ void GameStateAsteroidsUpdate(void)
 		AEVec2Add(&spShip->posCurr, &spShip->posCurr, &added);//YOU MAY NEED TO CHANGE/REPLACE THIS LINE
 
 		// Find the velocity according to the decceleration
+		spShip->velCurr.y = SHIP_ACCEL_BACKWARD * g_dt + spShip->velCurr.y;
+		spShip->posCurr.y = spShip->velCurr.y * g_dt + spShip->posCurr.y;
 		// Limit your speed over here
 	}
 
@@ -366,6 +371,9 @@ void GameStateAsteroidsDraw(void)
 		
 		// Set the current object instance's transform matrix using "AEGfxSetTransform"
 		// Draw the shape used by the current object instance using "AEGfxMeshDraw"
+		AEGfxSetPosition(spShip->posCurr.x, spShip->posCurr.y);
+		AEGfxSetTintColor(255.0f, 255.0f, 255.0f, 255.0f);
+		AEGfxMeshDraw(spShip->pObject->pMesh, AE_GFX_MDM_TRIANGLES);
 	}
 
 	//You can replace this condition/variable by your own data.
