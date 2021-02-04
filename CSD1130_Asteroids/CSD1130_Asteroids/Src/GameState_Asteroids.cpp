@@ -371,9 +371,7 @@ void GameStateAsteroidsDraw(void)
 		
 		// Set the current object instance's transform matrix using "AEGfxSetTransform"
 		// Draw the shape used by the current object instance using "AEGfxMeshDraw"
-		AEGfxSetPosition(spShip->posCurr.x, spShip->posCurr.y);
-		AEGfxSetTintColor(255.0f, 255.0f, 255.0f, 255.0f);
-		AEGfxMeshDraw(spShip->pObject->pMesh, AE_GFX_MDM_TRIANGLES);
+	
 	}
 
 	//You can replace this condition/variable by your own data.
