@@ -154,14 +154,42 @@ void GameStateAsteroidsLoad(void)
 	// =======================
 	// create the bullet shape
 	// =======================
+	pObj = sGameObjList + sGameObjNum++;
+	pObj->type = TYPE_BULLET;
 
+	AEGfxMeshStart();
+	AEGfxTriAdd(
+		-0.1f, 0.1f, 0xFFFF0000, 0.0f, 0.0f,
+		-0.1f, 0.0f, 0xFFFF0000, 0.0f, 0.0f,
+		0.1f, 0.0f, 0xFFFFFFFF, 0.0f, 0.0f);
+	AEGfxTriAdd(
+		0.1f, 0.1f, 0xFFFF0000, 0.0f, 0.0f,
+		-0.1f, 0.1f, 0xFFFF0000, 0.0f, 0.0f,
+		0.1f, 0.0f, 0xFFFFFFFF, 0.0f, 0.0f);
+
+	pObj->pMesh = AEGfxMeshEnd();
+	AE_ASSERT_MESG(pObj->pMesh, "fail to create object!!");
 	
 
 
 	// =========================
 	// create the asteroid shape
 	// =========================
+	pObj = sGameObjList + sGameObjNum++;
+	pObj->type = TYPE_ASTEROID;
 
+	AEGfxMeshStart();
+	AEGfxTriAdd(
+		-0.5f, 0.5f, 0xFFFF0000, 0.0f, 0.0f,
+		-0.5f, -0.5f, 0xFFFF0000, 0.0f, 0.0f,
+		0.5f, 0.0f, 0xFFFFFFFF, 0.0f, 0.0f);
+	AEGfxTriAdd(
+		-0.5f, 0.5f, 0xFFFF0000, 0.0f, 0.0f,
+		-0.5f, -0.5f, 0xFFFF0000, 0.0f, 0.0f,
+		0.5f, 0.0f, 0xFFFFFFFF, 0.0f, 0.0f);
+
+	pObj->pMesh = AEGfxMeshEnd();
+	AE_ASSERT_MESG(pObj->pMesh, "fail to create object!!");
 	
 }
 
@@ -371,9 +399,6 @@ void GameStateAsteroidsDraw(void)
 		
 		// Set the current object instance's transform matrix using "AEGfxSetTransform"
 		// Draw the shape used by the current object instance using "AEGfxMeshDraw"
-		AEGfxSetPosition(spShip->posCurr.x, spShip->posCurr.y);
-		AEGfxSetTintColor(255.0f, 255.0f, 255.0f, 255.0f);
-		AEGfxMeshDraw(spShip->pObject->pMesh, AE_GFX_MDM_TRIANGLES);
 	}
 
 	//You can replace this condition/variable by your own data.
