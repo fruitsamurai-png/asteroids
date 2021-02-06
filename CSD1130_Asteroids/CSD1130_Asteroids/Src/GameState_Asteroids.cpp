@@ -25,11 +25,15 @@ const unsigned int	GAME_OBJ_INST_NUM_MAX	= 2048;			//The total number of differe
 
 const unsigned int	SHIP_INITIAL_NUM		= 3;			// initial number of ship lives
 const float			SHIP_SIZE				= 16.0f;		// ship size
+const float			SHIP_MAXSPEED			= 50.0f;		//ship max speed
 const float			SHIP_ACCEL_FORWARD		= 40.0f;		// ship forward acceleration (in m/s^2)
 const float			SHIP_ACCEL_BACKWARD		= 40.0f;		// ship backward acceleration (in m/s^2)
 const float			SHIP_ROT_SPEED			= (2.0f * PI);	// ship rotation speed (degree/second)
 
 const float			BULLET_SPEED			= 100.0f;		// bullet speed (m/s)
+
+const unsigned int ASTEROID_NUM = 4;
+const float		   ASTEROID_SIZE[ASTEROID_NUM] = {16,32,48,56};
 extern float	 g_dt;
 extern double	 g_appTime;
 // -----------------------------------------------------------------------------
@@ -97,6 +101,9 @@ static unsigned long		sGameObjInstNum;							// The number of used game object i
 // pointer to the ship object
 static GameObjInst *		spShip;										// Pointer to the "Ship" game object instance
 
+//pointer to the init asteroid object
+static GameObjInst*			asteroid[ASTEROID_NUM]; 
+
 // number of ship available (lives 0 = game over)
 static long					sShipLives;									// The number of lives left
 
@@ -130,7 +137,6 @@ void GameStateAsteroidsLoad(void)
 
 	// The ship object instance hasn't been created yet, so this "spShip" pointer is initialized to 0
 	spShip = nullptr;
-
 	// load/create the mesh data (game objects / Shapes)
 	GameObj * pObj;
 
@@ -143,9 +149,9 @@ void GameStateAsteroidsLoad(void)
 
 	AEGfxMeshStart();
 	AEGfxTriAdd(
-		-0.5f,  0.5f, 0xFFFF0000, 0.0f, 0.0f, 
-		-0.5f, -0.5f, 0xFFFF0000, 0.0f, 0.0f,
-		 0.5f,  0.0f, 0xFFFFFFFF, 0.0f, 0.0f );  
+		-0.5f,  0.5f, 255, 0.0f, 0.0f, 
+		-0.5f, -0.5f, 255, 0.0f, 0.0f,
+		 0.5f,  0.0f, 255, 0.0f, 0.0f );  
 
 	pObj->pMesh = AEGfxMeshEnd();
 	AE_ASSERT_MESG(pObj->pMesh, "fail to create object!!");
@@ -181,11 +187,11 @@ void GameStateAsteroidsLoad(void)
 	AEGfxMeshStart();
 	AEGfxTriAdd(
 		-0.5f, 0.5f, 0xFFFF0000, 0.0f, 0.0f,
-		-0.5f, -0.5f, 0xFFFF0000, 0.0f, 0.0f,
+		-0.5f, 0.0f, 0xFFFF0000, 0.0f, 0.0f,
 		0.5f, 0.0f, 0xFFFFFFFF, 0.0f, 0.0f);
 	AEGfxTriAdd(
+		0.5f, 0.5f, 0xFFFF0000, 0.0f, 0.0f,
 		-0.5f, 0.5f, 0xFFFF0000, 0.0f, 0.0f,
-		-0.5f, -0.5f, 0xFFFF0000, 0.0f, 0.0f,
 		0.5f, 0.0f, 0xFFFFFFFF, 0.0f, 0.0f);
 
 	pObj->pMesh = AEGfxMeshEnd();
@@ -205,7 +211,11 @@ void GameStateAsteroidsInit(void)
 	AE_ASSERT(spShip);	
 
 	// CREATE THE INITIAL ASTEROIDS INSTANCES USING THE "gameObjInstCreate" FUNCTION
-
+	for (unsigned int i = 0; i < ASTEROID_NUM; i++)
+	{
+		asteroid[i] = gameObjInstCreate(TYPE_ASTEROID,ASTEROID_SIZE[i],nullptr,nullptr,0.0f);
+		AE_ASSERT(asteroid[i]);
+	}
 	// reset the score and the number of ships
 	sScore      = 0;
 	sShipLives  = SHIP_INITIAL_NUM;
@@ -235,7 +245,7 @@ void GameStateAsteroidsUpdate(void)
 	// v1 = a*t + v0		//This is done when the UP or DOWN key is pressed 
 	// Pos1 = v1*t + Pos0
 	
-	if (AEInputCheckCurr(AEVK_UP))
+	if (AEInputCheckCurr(AEVK_UP) || AEInputCheckCurr(AEVK_W))
 	{
 		AEVec2 added;
 		AEVec2Set(&added, cosf(spShip->dirCurr), sinf(spShip->dirCurr));
@@ -244,10 +254,11 @@ void GameStateAsteroidsUpdate(void)
 		// Find the velocity according to the acceleration
 		spShip->velCurr.y = SHIP_ACCEL_FORWARD * g_dt + spShip->velCurr.y;
 		spShip->posCurr.y = spShip->velCurr.y * g_dt + spShip->posCurr.y;
+		spShip->posCurr.x = spShip->velCurr.y * g_dt + spShip->posCurr.x;
 		// Limit your speed over here
 	}
 
-	if (AEInputCheckCurr(AEVK_DOWN))
+	if (AEInputCheckCurr(AEVK_DOWN)|| AEInputCheckCurr(AEVK_S))
 	{
 		AEVec2 added;
 		AEVec2Set(&added, -cosf(spShip->dirCurr), -sinf(spShip->dirCurr));
@@ -256,16 +267,17 @@ void GameStateAsteroidsUpdate(void)
 		// Find the velocity according to the decceleration
 		spShip->velCurr.y = SHIP_ACCEL_BACKWARD * g_dt + spShip->velCurr.y;
 		spShip->posCurr.y = spShip->velCurr.y * g_dt + spShip->posCurr.y;
+		spShip->posCurr.x = spShip->velCurr.y * g_dt + spShip->posCurr.x;
 		// Limit your speed over here
 	}
 
-	if (AEInputCheckCurr(AEVK_LEFT))
+	if (AEInputCheckCurr(AEVK_LEFT) || AEInputCheckCurr(AEVK_A))
 	{
 		spShip->dirCurr += SHIP_ROT_SPEED * (float)(AEFrameRateControllerGetFrameTime ());
 		spShip->dirCurr =  AEWrap(spShip->dirCurr, -PI, PI);
 	}
 
-	if (AEInputCheckCurr(AEVK_RIGHT))
+	if (AEInputCheckCurr(AEVK_RIGHT) || AEInputCheckCurr(AEVK_D))
 	{
 		spShip->dirCurr -= SHIP_ROT_SPEED * (float)(AEFrameRateControllerGetFrameTime ());
 		spShip->dirCurr =  AEWrap(spShip->dirCurr, -PI, PI);
@@ -317,7 +329,9 @@ void GameStateAsteroidsUpdate(void)
 		}
 
 		// Wrap asteroids here
-		
+		/*if (pInst->pObject->type == TYPE_ASTEROID)
+		{
+		}*/
 
 		// Remove bullets that go out of bounds
 		
@@ -385,9 +399,8 @@ void GameStateAsteroidsDraw(void)
 {
 	char strBuffer[1024];
 	
-	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 	AEGfxTextureSet(NULL, 0, 0);
-
+	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 	// draw all object instances in the list
 	for (unsigned long i = 0; i < GAME_OBJ_INST_NUM_MAX; i++)
 	{
@@ -399,6 +412,11 @@ void GameStateAsteroidsDraw(void)
 		
 		// Set the current object instance's transform matrix using "AEGfxSetTransform"
 		// Draw the shape used by the current object instance using "AEGfxMeshDraw"
+			AEGfxSetPosition(pInst->posCurr.x, pInst->posCurr.y);
+			AEGfxSetTintColor(1.0f, 0.5f, 1.0f, 1.0f);
+			AEGfxMeshDraw(pInst->pObject->pMesh, AE_GFX_MDM_TRIANGLES);
+			AEGfxSetTransparency(1.0f);
+			std::cout << pInst->pObject->type;
 	}
 
 	//You can replace this condition/variable by your own data.
