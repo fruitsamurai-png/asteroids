@@ -38,7 +38,7 @@ const float			ASTEROID_SPEED			= 20.0f;
 const float			BULLET_SIZE				= 10.0f;
 extern float		g_dt;
 extern double		g_appTime;
-bool				gameover =true;
+static bool			gameover =false;
 
 static bool			onValueChange = true;
 // -----------------------------------------------------------------------------
@@ -68,7 +68,7 @@ struct GameObj
 {
 	unsigned long		type;		// object type
 	AEGfxVertexList *	pMesh;		// This will hold the triangles which will form the shape of the object
-	//AEGfxTexture*		pTex;
+	AEGfxTexture*		pTex;
 };
 
 // ---------------------------------------------------------------------------
@@ -163,8 +163,8 @@ void GameStateAsteroidsLoad(void)
 
 	pObj->pMesh = AEGfxMeshEnd();
 	AE_ASSERT_MESG(pObj->pMesh, "fail to create object!!");
-	//pObj->pTex = AEGfxTextureLoad("../Resources/Art/ship.png");
-	//AE_ASSERT_MESG(pObj->pTex, "fail to create object!!");
+	pObj->pTex = AEGfxTextureLoad("../Resources/Art/ship.png");
+	AE_ASSERT_MESG(pObj->pTex, "fail to create object!!");
 
 	// =======================
 	// create the bullet shape
@@ -382,11 +382,14 @@ static void GameStateAsteroidsCollision(void)
 					if (CollisionIntersection_RectRect(pInst->boundingBox, pInst->velCurr,
 						pInst1->boundingBox, pInst1->velCurr))
 					{
-						std::cout << "s";
-						sShipLives--;
+						--sShipLives;
 						AEVec2Zero(&pInst1->posCurr);
+						onValueChange = true;
+						gameObjInstDestroy(pInst);
 						if (sShipLives < 0)
 						{
+							AEVec2Zero(&pInst1->velCurr);
+							AEVec2Zero(&pInst1->posCurr);
 							gameover = true;
 						}
 					}
@@ -396,7 +399,6 @@ static void GameStateAsteroidsCollision(void)
 					if (CollisionIntersection_RectRect(pInst->boundingBox, pInst->velCurr,
 						pInst1->boundingBox, pInst1->velCurr))
 					{
-						std::cout << "tt";
 						AEVec2 vel, pos;
 						float dir, size;
 						sScore += 100;
@@ -407,7 +409,7 @@ static void GameStateAsteroidsCollision(void)
 						{
 							vel.y = ASTEROID_SPEED * AERandFloat();
 							vel.x = ASTEROID_SPEED * AERandFloat();
-							AEVec2Set(&pos, 0.5f * AEGetWindowWidth() * AERandFloat(), (0.5f * (AEGetWindowHeight() * AERandFloat())));
+							AEVec2Set(&pos, AEGetWindowWidth() * AERandFloat(), ((AEGetWindowHeight() * AERandFloat() ) ) );
 							dir = AERandFloat() * 2 * PI;
 							size = (ASTEROID_SIZE * AERandFloat() + ASTEROID_BASE);
 							gameObjInstCreate(TYPE_ASTEROID, size, &pos, &vel, dir);
@@ -450,7 +452,10 @@ void GameStateAsteroidsUpdate(void)
 	// =========================
 	// update according to input
 	// =========================
-	GameStateAsteroidsInput();
+	if (gameover==false && sScore < 5000)
+	{
+		GameStateAsteroidsInput();
+	}
 
 	// ======================================================
 	// update physics and wrapping of all active game object instances
@@ -461,8 +466,10 @@ void GameStateAsteroidsUpdate(void)
 	// ====================
 	// check for collision
 	// ====================
-	GameStateAsteroidsCollision();
-	
+	if (gameover==false && sScore < 5000)
+	{
+		GameStateAsteroidsCollision();
+	}
 	// =====================================
 	// calculate the matrix for all objects
 	// =====================================
@@ -514,6 +521,10 @@ void GameStateAsteroidsDraw(void)
 			//AEGfxPrint(280, 260, 0xFFFFFFFF, "       GAME OVER       ");
 			printf("       GAME OVER       \n");
 		}
+		if (sScore > 5000)
+		{
+			printf("       YOU ROCK       \n");
+		}
 
 		onValueChange = false;
 	}
@@ -548,10 +559,10 @@ void GameStateAsteroidsUnload(void)
 	for (unsigned long i = 0; i < GAME_OBJ_NUM_MAX; i++)
 	{
 		GameObj* pObj = sGameObjList + i;
-		if (pObj->pMesh != nullptr)
-		{
+		if (pObj->pMesh )
 			AEGfxMeshFree(pObj->pMesh);
-		}
+		if(pObj->pTex)
+			AEGfxTextureUnload(pObj->pTex);
 	}
 }
 
