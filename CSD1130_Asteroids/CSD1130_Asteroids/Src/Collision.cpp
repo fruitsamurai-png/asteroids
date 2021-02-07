@@ -22,37 +22,67 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 bool CollisionIntersection_RectRect(const AABB & aabb1, const AEVec2 & vel1, 
 									const AABB & aabb2, const AEVec2 & vel2)
 {
-	UNREFERENCED_PARAMETER(aabb1);
-	UNREFERENCED_PARAMETER(vel1);
-	UNREFERENCED_PARAMETER(aabb2);
-	UNREFERENCED_PARAMETER(vel2);
-
-	/*
-	Implement the collision intersection over here.
-
-	The steps are:	
-	Step 1: Check for static collision detection between rectangles (before moving). 
-				If the check returns no overlap you continue with the following next steps (dynamics).
-				Otherwise you return collision true
-
-	Step 2: Initialize and calculate the new velocity of Vb
-			tFirst = 0
-			tLast = dt
-
-	Step 3: Working with one dimension (x-axis).
-			if(Vb < 0)
-				case 1
-				case 4
-			if(Vb > 0)
-				case 2
-				case 3
-
-			case 5
-
-	Step 4: Repeat step 3 on the y-axis
-
-	Step 5: Otherwise the rectangles intersect
-
-	*/
-	return 0;
+	if (aabb1.max.x<aabb2.min.x||aabb1.min.x>aabb2.max.x||
+		aabb1.max.y<aabb2.min.y||aabb1.min.y>aabb2.max.y)
+	{
+		return false;
+	}
+	f32 tFirst = 0;
+	f32 tLast = g_dt;
+	AEVec2 vb;
+	AEVec2 v1 = vel1;
+	AEVec2 v2 = vel2;
+	AEVec2Sub(&vb, &v2, &v1);
+	if (vb.x < 0)//case 1 4 for x axis
+	{
+		if (aabb1.min.x > aabb2.max.x)return false;
+		if (aabb1.max.x < aabb2.min.x)
+		{
+			tFirst = AEMax((aabb1.max.x - aabb2.min.x) / vb.x,tFirst);
+		}
+		if (aabb1.min.x < aabb2.max.x)
+		{
+			tLast = AEMin((aabb1.min.x - aabb2.max.x) / vb.x,tLast);
+		}
+	}
+	if (vb.x > 0)//case 2 3 for x axis
+	{
+		if (aabb1.max.x < aabb2.min.x)return false;
+		if (aabb1.min.x > aabb2.max.x)
+		{
+			tFirst = AEMax((aabb1.min.x - aabb2.max.x) / vb.x,tFirst);
+		}
+		if (aabb1.max.x > aabb2.min.x)
+		{
+			tLast = AEMin((aabb1.max.x - aabb2.min.x) / vb.x,tLast);
+		}
+	}
+	if (vb.y < 0)//case 1 4 for y axis
+	{
+		if (aabb1.min.y > aabb2.max.y)return false;
+		if (aabb1.max.y < aabb2.min.y)
+		{
+			tFirst = AEMax((aabb1.max.y - aabb2.min.y) / vb.y, tFirst);
+		}
+		if (aabb1.min.y < aabb2.max.y)
+		{
+			tLast = AEMin((aabb1.min.y - aabb2.max.y) / vb.y, tLast);
+		}
+	}
+	if (vb.y > 0)//case 2 3 for y axis
+	{
+		if (aabb1.max.y < aabb2.min.y)return false;
+		if (aabb1.min.y > aabb2.max.y)
+		{
+			tFirst = AEMax((aabb1.min.y - aabb2.max.y) / vb.y, tFirst);
+		}
+		if (aabb1.max.y > aabb2.min.y)
+		{
+			tLast = AEMin((aabb1.max.y - aabb2.min.y) / vb.y, tLast);
+		}
+	}
+	if (tFirst > tLast)return false;
+	
+	
+	return true;
 }
