@@ -26,7 +26,7 @@ double	 g_appTime;
 	Starting point of the application
 */
 /******************************************************************************/
-int WINAPI WinMain(HINSTANCE instanceH, HINSTANCE prevInstanceH, LPSTR command_line, int show)
+int WINAPI WinMain(_In_ HINSTANCE instanceH, _In_opt_ HINSTANCE prevInstanceH, _In_ LPSTR command_line, _In_ int show)
 {
 	UNREFERENCED_PARAMETER(prevInstanceH);
 	UNREFERENCED_PARAMETER(command_line);
@@ -36,9 +36,6 @@ int WINAPI WinMain(HINSTANCE instanceH, HINSTANCE prevInstanceH, LPSTR command_l
 		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	#endif
 
-	//int * pi = new int;
-
-
 	// Initialize the system
 	AESysInit (instanceH, show, 800, 600, 1, 60, false, NULL);
 
@@ -46,9 +43,7 @@ int WINAPI WinMain(HINSTANCE instanceH, HINSTANCE prevInstanceH, LPSTR command_l
 	AESysSetWindowTitle("Asteroids Demo!");
 
 	//set background color
-	AEGfxSetBackgroundColor(0, 0, 0);
-
-
+	AEGfxSetBackgroundColor(255.0f, 255.0f, 255.0f);
 
 	GameStateMgrInit(GS_ASTEROIDS);
 
