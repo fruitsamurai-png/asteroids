@@ -152,7 +152,8 @@ void GameStateAsteroidsLoad(void)
 	GameObj * pObj;
 
 	//load the font texture
-	Text = AEGfxCreateFont("../Resources/Fonts/Arial Italic.ttf",10);
+	Text = AEGfxCreateFont("../Resources/Fonts/Arial Italic.ttf",12);
+	AE_ASSERT_MESG(Text, "fail to create object!!");
 	// =========================
 	// create the Background
 	// =========================
@@ -552,7 +553,6 @@ void GameStateAsteroidsDraw(void)
 	if(onValueChange)
 	{
 		sprintf_s(strBuffer, "Score: %d", sScore);
-		AEGfxPrint(Text, strBuffer,-1.0f, 1.0f, 2.0f, 1.0f, 1.0f,1.0f );
 		printf("%s \n", strBuffer);
 
 		sprintf_s(strBuffer, "Ship Left: %d", sShipLives >= 0 ? sShipLives : 0);
@@ -569,9 +569,10 @@ void GameStateAsteroidsDraw(void)
 		{
 			printf("       YOU ROCK       \n");
 		}
-
 		onValueChange = false;
 	}
+	AEGfxPrint(Text, strBuffer, 0.0f, 0.0f, 2.0f, 1.0f, 1.0f, 1.0f);
+
 }
 
 /******************************************************************************/
