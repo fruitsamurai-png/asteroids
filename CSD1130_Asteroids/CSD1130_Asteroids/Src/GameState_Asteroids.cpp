@@ -286,8 +286,8 @@ static void GameStateAsteroidsCreate(void)
 	f32 polarity = AERandFloat()> 0.5f ? -1.0f : 1.0f;
 	f32 pos1 = AERandFloat() > 0.5f ? AEGfxGetWinMaxX()+ASTEROID_BASE : AEGfxGetWinMinX() - ASTEROID_BASE;
 	f32 pos2 = AERandFloat() > 0.5f ? AEGfxGetWinMaxY() + ASTEROID_BASE : AEGfxGetWinMinY() - ASTEROID_BASE;
-	
-	AEVec2Set(&pos, pos1, pos2);
+	f32 half1 = AERandFloat() > 0.5f ? 0.0f : 1.0f;
+	AEVec2Set(&pos, pos1*half1, pos2);
 	AEVec2Set(&vel, ASTEROID_SPEED * AERandFloat() + ASTEROID_BASE, ASTEROID_SPEED * AERandFloat() + ASTEROID_BASE);
 	dir = 2*PI*AERandFloat();
 	AEVec2Scale(&pos, &pos, polarity);
@@ -384,6 +384,7 @@ static void GameStateAsteroidsPhysics(void)
 		AEVec2Add(&pInst->boundingBox.min, &pInst->posCurr, &pInst->boundingBox.min);
 		AEVec2Set(&pInst->boundingBox.max, 0.5f * pInst->scale, 0.5f * pInst->scale);
 		AEVec2Add(&pInst->boundingBox.max, &pInst->posCurr, &pInst->boundingBox.max);
+
 	}
 
 }
