@@ -29,7 +29,7 @@ const float			SHIP_ACCEL_FORWARD		= 60.0f;		// ship forward acceleration (in m/s
 const float			SHIP_ACCEL_BACKWARD		= 60.0f;		// ship backward acceleration (in m/s^2)
 const float			SHIP_ROT_SPEED			= (2.0f * PI);	// ship rotation speed (degree/second)
 
-const unsigned int ASTEROID_NUM = 4;
+const unsigned int	ASTEROID_NUM			= 4;
 const float			ASTEROID_SIZE			= 64.0f;
 const float			ASTEROID_BASE			= 20.0f;
 const float			ASTEROID_SPEED			= 32.0f;
@@ -352,7 +352,7 @@ static void GameStateAsteroidsInput(void)
 		// Create an instance
 		gameObjInstCreate(TYPE_BULLET, BULLET_SIZE, &spShip->posCurr, &angle, spShip->dirCurr);
 	}
-
+	
 }
 static void GameStateAsteroidsPhysics(void)
 {
@@ -511,31 +511,31 @@ static void GameStateAsteroidsMatrix(void)
 }
 void GameStateAsteroidsUpdate(void)
 {
-	// =========================
-	// update according to input
-	// =========================
-	if (gameover==false && sScore < 5000)
-	{
-		GameStateAsteroidsInput();
-	}
+		// =========================
+		// update according to input
+		// =========================
+		if (gameover == false && sScore < 5000)
+		{
+			GameStateAsteroidsInput();
+		}
 
-	// ======================================================
-	// update physics and wrapping of all active game object instances
-	// ======================================================
-	GameStateAsteroidsPhysics();
-	GameStateAsteroidsWrap();
+		// ======================================================
+		// update physics and wrapping of all active game object instances
+		// ======================================================
+		GameStateAsteroidsPhysics();
+		GameStateAsteroidsWrap();
 
-	// ====================
-	// check for collision
-	// ====================
-	if (gameover==false && sScore < 5000)
-	{
-		GameStateAsteroidsCollision();
-	}
-	// =====================================
-	// calculate the matrix for all objects
-	// =====================================
-	GameStateAsteroidsMatrix();
+		// ====================
+		// check for collision
+		// ====================
+		if (gameover == false && sScore < 5000)
+		{
+			GameStateAsteroidsCollision();
+		}
+		// =====================================
+		// calculate the matrix for all objects
+		// =====================================
+		GameStateAsteroidsMatrix();
 }
 
 /******************************************************************************/
