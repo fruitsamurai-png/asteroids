@@ -34,8 +34,9 @@ const float			ASTEROID_SIZE			= 64.0f;
 const float			ASTEROID_BASE			= 20.0f;
 const float			ASTEROID_SPEED			= 32.0f;
 
-const float			BULLET_SIZE				= 10.0f;//scale of bullet 
+const float			BULLET_SIZE				= 15.0f;//scale of bullet 
 const float			BULLET_SPEED			= 10.0f;// bullet speed (m/s)
+
 
 extern float		g_dt;//delta time called from main.cpp
 //booleans
@@ -257,9 +258,13 @@ void GameStateAsteroidsInit(void)
 	for (unsigned int i = 0; i < ASTEROID_NUM; i++)
 	{
 			f32 polarity = AERandFloat() > 0.5f ? -1.0f : 1.0f;
-			AEVec2Set(&vel, ASTEROID_SPEED * AERandFloat()*polarity, ASTEROID_SPEED * AERandFloat()*polarity);
-			AEVec2Set(&pos, 0.5f * AEGetWindowWidth() * AERandFloat(), (0.5f * (AEGetWindowHeight() * AERandFloat())));
-			dir = PI;
+			AEVec2Set(&vel, ASTEROID_SPEED * AERandFloat() + ASTEROID_BASE, ASTEROID_SPEED * AERandFloat() + ASTEROID_BASE);
+			f32 pos1 = AERandFloat() > 0.5f ? AEGfxGetWinMaxX() + ASTEROID_BASE : AEGfxGetWinMinX() - ASTEROID_BASE;
+			f32 pos2 = AERandFloat() > 0.5f ? AEGfxGetWinMaxY() + ASTEROID_BASE : AEGfxGetWinMinY() - ASTEROID_BASE;
+			//AEVec2Set(&pos, 0.5f * AEGetWindowWidth() * AERandFloat(), (0.5f * (AEGetWindowHeight() * AERandFloat())));
+			AEVec2Scale(&vel, &vel, polarity);
+			AEVec2Set(&pos, pos1 *0.75, pos2  * 0.75);
+			dir = 2 * PI * AERandFloat();
 			size = (ASTEROID_SIZE * AERandFloat()+ ASTEROID_BASE);
 			asteroid[i] = gameObjInstCreate(TYPE_ASTEROID, size, &pos, &vel, dir);
 			AE_ASSERT(asteroid[i]);
@@ -278,18 +283,26 @@ static void GameStateAsteroidsCreate(void)
 {
 	AEVec2 vel, pos;
 	f32 dir, size;
-	f32 polarity = AERandFloat()>0.5f  ? -1.0f : 1.0f;
-	f32 pos1 = AERandFloat() > 0.5f ? AEGfxGetWinMaxX : AEGfxGetWinMinX;
-	f32 pos2 = AERandFloat() > 0.5f ? AEGfxGetWinMaxY : AEGfxGetWinMinY;
-	f32 rand = polarity * AEGetWindowWidth() * AERandFloat();
-	f32 rand1 = polarity * AEGetWindowWidth() * AERandFloat();
-	AEVec2Set(&pos, rand, rand1);
-	AEVec2Set(&vel, ASTEROID_SPEED * AERandFloat()*polarity, ASTEROID_SPEED * AERandFloat()*polarity);
-	dir = polarity  * PI;
+	f32 polarity = AERandFloat()> 0.5f ? -1.0f : 1.0f;
+	f32 pos1 = AERandFloat() > 0.5f ? AEGfxGetWinMaxX()+ASTEROID_BASE : AEGfxGetWinMinX() - ASTEROID_BASE;
+	f32 pos2 = AERandFloat() > 0.5f ? AEGfxGetWinMaxY() + ASTEROID_BASE : AEGfxGetWinMinY() - ASTEROID_BASE;
+	
+	AEVec2Set(&pos, pos1, pos2);
+	AEVec2Set(&vel, ASTEROID_SPEED * AERandFloat() + ASTEROID_BASE, ASTEROID_SPEED * AERandFloat() + ASTEROID_BASE);
+	dir = 2*PI*AERandFloat();
 	AEVec2Scale(&pos, &pos, polarity);
-	if (sScore%1000==0)
+	AEVec2Scale(&vel, &vel, polarity);
+	if (sScore>= 1500)
 	{
-		AEVec2Scale(&vel, &vel, 3.0f);
+		AEVec2Scale(&vel, &vel,(1.5f));
+	}
+	if (sScore >= 3000)
+	{
+		AEVec2Scale(&vel, &vel, (1.5f));
+	}
+	if (sScore >= 4000)
+	{
+		AEVec2Scale(&vel, &vel, (1.5f));
 	}
 	size = (ASTEROID_SIZE * AERandFloat() + ASTEROID_BASE);
 	gameObjInstCreate(TYPE_ASTEROID, size, &pos, &vel, dir);
@@ -329,9 +342,9 @@ static void GameStateAsteroidsInput(void)
 	}
 
 	// Shoot a bullet if space is triggered (Create a new object instance)
-	AEVec2 angle;
 	if (AEInputCheckTriggered(AEVK_SPACE))
 	{
+		AEVec2 angle;
 		// Get the bullet's direction according to the ship's direction
 		AEVec2Set(&angle, cosf(spShip->dirCurr) * BULLET_SPEED, sinf(spShip->dirCurr) * BULLET_SPEED);
 
@@ -359,6 +372,7 @@ static void GameStateAsteroidsPhysics(void)
 			AEVec2Set(&added, -cosf(pInst->dirCurr), sinf(pInst->dirCurr));
 			AEVec2ScaleAdd(&added, &pInst->velCurr, &added,g_dt);//YOU MAY NEED TO CHANGE/REPLACE THIS LINE
 			AEVec2Add(&pInst->posCurr, &pInst->posCurr, &added);//YOU MAY NEED TO CHANGE/REPLACE THIS LINE
+			pInst->dirCurr += 0.001f;
 		}
 		if (pInst->pObject->type == TYPE_BULLET)
 		{
@@ -534,6 +548,7 @@ void GameStateAsteroidsDraw(void)
 	char strBuffer[1024];
 	char ScoreLiveBuffer[1024];
 	char GameBuffer[1024];
+
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 	AEGfxSetTransparency(1.0f);
