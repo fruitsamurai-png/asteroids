@@ -152,7 +152,7 @@ void GameStateAsteroidsLoad(void)
 	GameObj * pObj;
 
 	//load the font texture
-	Text = AEGfxCreateFont("../Resources/Fonts/Arial Italic.ttf",12);
+	Text = AEGfxCreateFont("../Resources/Fonts/Arial Italic.ttf",24);
 	AE_ASSERT_MESG(Text, "fail to create object!!");
 	// =========================
 	// create the Background
@@ -256,9 +256,10 @@ void GameStateAsteroidsInit(void)
 	// CREATE THE INITIAL ASTEROIDS INSTANCES USING THE "gameObjInstCreate" FUNCTION
 	for (unsigned int i = 0; i < ASTEROID_NUM; i++)
 	{
-			AEVec2Set(&vel, ASTEROID_SPEED * AERandFloat(), ASTEROID_SPEED * AERandFloat());
+			f32 polarity = AERandFloat() > 0.5f ? -1.0f : 1.0f;
+			AEVec2Set(&vel, ASTEROID_SPEED * AERandFloat()*polarity, ASTEROID_SPEED * AERandFloat()*polarity);
 			AEVec2Set(&pos, 0.5f * AEGetWindowWidth() * AERandFloat(), (0.5f * (AEGetWindowHeight() * AERandFloat())));
-			dir = AERandFloat() * 2 * PI;
+			dir = PI;
 			size = (ASTEROID_SIZE * AERandFloat()+ ASTEROID_BASE);
 			asteroid[i] = gameObjInstCreate(TYPE_ASTEROID, size, &pos, &vel, dir);
 			AE_ASSERT(asteroid[i]);
@@ -277,12 +278,14 @@ static void GameStateAsteroidsCreate(void)
 {
 	AEVec2 vel, pos;
 	f32 dir, size;
-	AEVec2Set(&vel, ASTEROID_SPEED * AERandFloat(), ASTEROID_SPEED * AERandFloat());
-	f32 rand = AERandFloat() > 0.5f ? (AEGfxGetWinMinX() - AERandFloat() )  : (AEGfxGetWinMaxX() + AERandFloat()) ;
-	f32 rand1 = AERandFloat() > 0.5f ? (AEGfxGetWinMinY() - AERandFloat() )  : (AEGfxGetWinMaxY() + AERandFloat()) ;
-	AEVec2Set(&pos, rand, rand1);
 	f32 polarity = AERandFloat()>0.5f  ? -1.0f : 1.0f;
-	dir = AERandFloat() * 2 * PI;
+	f32 pos1 = AERandFloat() > 0.5f ? AEGfxGetWinMaxX : AEGfxGetWinMinX;
+	f32 pos2 = AERandFloat() > 0.5f ? AEGfxGetWinMaxY : AEGfxGetWinMinY;
+	f32 rand = polarity * AEGetWindowWidth() * AERandFloat();
+	f32 rand1 = polarity * AEGetWindowWidth() * AERandFloat();
+	AEVec2Set(&pos, rand, rand1);
+	AEVec2Set(&vel, ASTEROID_SPEED * AERandFloat()*polarity, ASTEROID_SPEED * AERandFloat()*polarity);
+	dir = polarity  * PI;
 	AEVec2Scale(&pos, &pos, polarity);
 	if (sScore%1000==0)
 	{
@@ -356,7 +359,6 @@ static void GameStateAsteroidsPhysics(void)
 			AEVec2Set(&added, -cosf(pInst->dirCurr), sinf(pInst->dirCurr));
 			AEVec2ScaleAdd(&added, &pInst->velCurr, &added,g_dt);//YOU MAY NEED TO CHANGE/REPLACE THIS LINE
 			AEVec2Add(&pInst->posCurr, &pInst->posCurr, &added);//YOU MAY NEED TO CHANGE/REPLACE THIS LINE
-			pInst->dirCurr+=0.001f;
 		}
 		if (pInst->pObject->type == TYPE_BULLET)
 		{
@@ -530,6 +532,8 @@ void GameStateAsteroidsUpdate(void)
 void GameStateAsteroidsDraw(void)
 {
 	char strBuffer[1024];
+	char ScoreLiveBuffer[1024];
+	char GameBuffer[1024];
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 	AEGfxSetTransparency(1.0f);
@@ -550,19 +554,29 @@ void GameStateAsteroidsDraw(void)
 	
 	//You can replace this condition/variable by your own data.
 	//The idea is to display any of these variables/strings whenever a change in their value happens
+		sprintf_s(ScoreLiveBuffer, "Score: %-80d Ship Left: %d", sScore, sShipLives);
+		AEGfxPrint(Text, ScoreLiveBuffer, -1.0f, 0.9f, 1.0f, 1.0f, 1.0f, 1.0f);
+		if (gameover)
+		{
+			sprintf_s(GameBuffer,"       GAME OVER       \n");
+			AEGfxPrint(Text, GameBuffer, -0.3f, 0.0f, 1.1f, 1.0f, 1.0f, 1.0f);
+		}
+		if (sScore == 5000)
+		{
+			sprintf_s(GameBuffer, "       YOU ROCK       \n");
+			AEGfxPrint(Text, GameBuffer, -0.3f, 0.0f, 1.1f, 1.0f, 1.0f, 1.0f);
+		}
 	if(onValueChange)
 	{
 		sprintf_s(strBuffer, "Score: %d", sScore);
 		printf("%s \n", strBuffer);
 
 		sprintf_s(strBuffer, "Ship Left: %d", sShipLives >= 0 ? sShipLives : 0);
-		//AEGfxPrint(600, 10, (u32)-1, strBuffer);
 		printf("%s \n", strBuffer);
 
 		// display the game over message
 		if (gameover)
 		{
-			//AEGfxPrint(280, 260, 0xFFFFFFFF, "       GAME OVER       ");
 			printf("       GAME OVER       \n");
 		}
 		if (sScore == 5000)
@@ -571,7 +585,6 @@ void GameStateAsteroidsDraw(void)
 		}
 		onValueChange = false;
 	}
-	AEGfxPrint(Text, strBuffer, 0.0f, 0.0f, 2.0f, 1.0f, 1.0f, 1.0f);
 
 }
 
