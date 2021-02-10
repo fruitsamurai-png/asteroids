@@ -4,7 +4,7 @@
 \author 	Keith Chng
 \par    	email: n.chng\@digipen.edu
 \date   	10/2/21
-\brief
+\brief		This is the game state manager where it controls each game state
 
 Copyright (C) 2021 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the
@@ -33,6 +33,7 @@ extern unsigned int gGameStatePrev;
 extern unsigned int gGameStateNext;
 
 // ---------------------------------------------------------------------------
+//functions pointer 
 
 extern void (*GameStateLoad)();
 extern void (*GameStateInit)();

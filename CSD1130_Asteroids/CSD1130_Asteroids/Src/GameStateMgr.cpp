@@ -4,7 +4,7 @@
 \author 	DigiPen
 \par    	email: digipen\@digipen.edu
 \date   	January 01, 2021
-\brief
+\brief		This is the game state manager where it controls each game state
 
 Copyright (C) 2021 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the
@@ -60,7 +60,7 @@ void GameStateMgrUpdate()
 	if ((gGameStateCurr == GS_RESTART) || (gGameStateCurr == GS_QUIT))
 		return;
 
-	switch (gGameStateCurr)
+	switch (gGameStateCurr)//switch case to change the game state function pointers
 	{
 	case GS_ASTEROIDS:
 		GameStateLoad = GameStateAsteroidsLoad;

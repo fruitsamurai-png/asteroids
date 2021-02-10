@@ -1,12 +1,13 @@
 /******************************************************************************/
 /*!
 \file		Collision.h
-\author 	DigiPen
-\par    	email: digipen\@digipen.edu
-\date   	January 01, 20xx
-\brief
+\author 	Keith Chng
+\par    	email: n.chng\@digipen.edu
+\date   	10/2/21
+\brief		Header file for AABB collision function to see if 2 instances/entity are colliding
+			statically or dynamically
 
-Copyright (C) 20xx DigiPen Institute of Technology.
+Copyright (C) 2021 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the
 prior written consent of DigiPen Institute of Technology is prohibited.
  */
@@ -19,14 +20,11 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 
 /**************************************************************************/
 /*!
-
+	Struct for the AABB collision box
 	*/
 /**************************************************************************/
 struct AABB
 {
-	//AEVec2	c; // center
-	//float  r[2]; // holds half width and half height
-	
 	AEVec2	min;
 	AEVec2	max;
 };

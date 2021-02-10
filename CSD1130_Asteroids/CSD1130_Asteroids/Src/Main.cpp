@@ -4,7 +4,7 @@
 \author 	Keith Chng
 \par    	email: n.chng\@digipen.edu
 \date   	10/2/21
-\brief
+\brief		Main game function that consist of the game state manager and game state loop
 
 Copyright (C) 2021 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the
@@ -81,8 +81,8 @@ int WINAPI WinMain(_In_ HINSTANCE instanceH, _In_opt_ HINSTANCE prevInstanceH, _
 			if ((AESysDoesWindowExist() == false) || AEInputCheckTriggered(AEVK_ESCAPE))
 				gGameStateNext = GS_QUIT;
 
-			g_dt = (f32)AEFrameRateControllerGetFrameTime();
-			g_appTime += g_dt;
+			g_dt = (f32)AEFrameRateControllerGetFrameTime();//delta time 
+			g_appTime += g_dt;//application run time
 		}
 		
 		GameStateFree();

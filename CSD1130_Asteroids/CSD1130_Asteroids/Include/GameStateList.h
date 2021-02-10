@@ -4,7 +4,7 @@
 \author 	Keith Chng
 \par    	email: n.chng\@digipen.edu
 \date   	10/2/21
-\brief
+\brief		Header files that contains all the enums for each game state
 
 Copyright (C) 2021 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the
