@@ -249,7 +249,7 @@ void GameStateAsteroidsInit(void)
 	AEVec2 vel,pos;
 	float dir,size;
 	//initialise the background with the size of the windowwidth
-	gameObjInstCreate(TYPE_BG, AEGetWindowWidth(), nullptr, nullptr, 0.0f);
+	gameObjInstCreate(TYPE_BG, (float)AEGetWindowWidth(), nullptr, nullptr, 0.0f);
 	// create the main ship
 	spShip = gameObjInstCreate(TYPE_SHIP, SHIP_SIZE, nullptr, nullptr, 0.0f);
 	AE_ASSERT(spShip);	
