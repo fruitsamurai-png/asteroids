@@ -167,7 +167,7 @@ void GameStateAsteroidsLoad(void)
 		0.5f, -0.5f, 0xFFFFFFFF, 0.0f, 0.0f);
 	pObj->pMesh = AEGfxMeshEnd();
 	AE_ASSERT_MESG(pObj->pMesh, "fail to create object!!");
-	pObj->pTex = AEGfxTextureLoad("../Resources/Art/bg.png");
+	pObj->pTex = AEGfxTextureLoad("../Resources/Textures/bg.png");
 	AE_ASSERT_MESG(pObj->pTex, "fail to create object!!");
 
 	// ======================================
@@ -188,7 +188,7 @@ void GameStateAsteroidsLoad(void)
 		0.5f, -0.5f, 0xFFFFFFFF, 0.0f, 0.0f);
 	pObj->pMesh = AEGfxMeshEnd();
 	AE_ASSERT_MESG(pObj->pMesh, "fail to create object!!");
-	pObj->pTex = AEGfxTextureLoad("../Resources/Art/ship.png");
+	pObj->pTex = AEGfxTextureLoad("../Resources/Textures/ship.png");
 	AE_ASSERT_MESG(pObj->pTex, "fail to create object!!");
 
 	// ========================================
@@ -209,7 +209,7 @@ void GameStateAsteroidsLoad(void)
 
 	pObj->pMesh = AEGfxMeshEnd();
 	AE_ASSERT_MESG(pObj->pMesh, "fail to create object!!");
-	pObj->pTex = AEGfxTextureLoad("../Resources/Art/beam.png");
+	pObj->pTex = AEGfxTextureLoad("../Resources/Textures/beam.png");
 	AE_ASSERT_MESG(pObj->pTex, "fail to create object!!");
 
 
@@ -231,7 +231,7 @@ void GameStateAsteroidsLoad(void)
 
 	pObj->pMesh = AEGfxMeshEnd();
 	AE_ASSERT_MESG(pObj->pMesh, "fail to create object!!");
-	pObj->pTex = AEGfxTextureLoad("../Resources/Art/block.png");
+	pObj->pTex = AEGfxTextureLoad("../Resources/Textures/block.png");
 	AE_ASSERT_MESG(pObj->pTex, "fail to create object!!");
 	
 }
