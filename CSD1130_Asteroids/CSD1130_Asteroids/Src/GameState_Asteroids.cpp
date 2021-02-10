@@ -281,19 +281,20 @@ void GameStateAsteroidsInit(void)
 /******************************************************************************/
 static void GameStateAsteroidsScore(void)
 {
+	//multiple string buffers to print on screen and terminal
 	char strBuffer[1024];
 	char ScoreLiveBuffer[1024];
 	char GameBuffer[1024];
 	char RestartBuffer[1024];
 
 	//sprint the score and lives into string
-	sprintf_s(ScoreLiveBuffer, "Score: %-80d Ship Left: %d", sScore, sShipLives);
+	sprintf_s(ScoreLiveBuffer, "Score: %-80d Ship Left: %d", sScore, sShipLives >= 0 ? sShipLives : 0);
 
 	//display the score and lives on game screen
 	AEGfxPrint(Text, ScoreLiveBuffer, -1.0f, 0.9f, 1.0f, 1.0f, 1.0f, 1.0f);
 	if (gameover)
 	{
-		if (sShipLives <= 0)//if no lives
+		if (sShipLives < 0)//if no lives
 		{
 			sprintf_s(GameBuffer, "       GAME OVER       \n");
 
@@ -314,14 +315,14 @@ static void GameStateAsteroidsScore(void)
 	}
 	if (onValueChange)
 	{
-		sprintf_s(strBuffer, "Score: %d", sScore);
+		sprintf_s(strBuffer, "Score: %d", sScore);//print the score on terminal
 		printf("%s \n", strBuffer);
 
-		sprintf_s(strBuffer, "Ship Left: %d", sShipLives >= 0 ? sShipLives : 0);
+		sprintf_s(strBuffer, "Ship Left: %d", sShipLives >= 0 ? sShipLives : 0);//print the lives on terminal
 		printf("%s \n", strBuffer);
 
 		// display the game over message
-		if (sShipLives <= 0)
+		if (sShipLives < 0)
 		{
 			printf("       GAME OVER       \n");
 		}
@@ -383,7 +384,7 @@ static void GameStateAsteroidsInput(void)
 		AEVec2Set(&accCurr, cosf(spShip->dirCurr) * SHIP_ACCEL_FORWARD * g_dt, sinf(spShip->dirCurr) * SHIP_ACCEL_FORWARD * g_dt);
 		AEVec2ScaleAdd(&spShip->velCurr, &accCurr, &spShip->velCurr, g_dt);
 
-		// Limit your speed over here
+		// Limit speed over here
 		AEVec2Scale(&spShip->velCurr, &spShip->velCurr, 0.99f);
 	}
 	if (AEInputCheckCurr(AEVK_DOWN) || AEInputCheckCurr(AEVK_S))
@@ -392,7 +393,7 @@ static void GameStateAsteroidsInput(void)
 		AEVec2Set(&accCurr, -cosf(spShip->dirCurr) * SHIP_ACCEL_BACKWARD * g_dt, -sinf(spShip->dirCurr) * SHIP_ACCEL_BACKWARD * g_dt);
 		AEVec2ScaleAdd(&spShip->velCurr, &accCurr, &spShip->velCurr, g_dt);
 
-		// Limit your speed over here
+		// Limit speed over here
 		AEVec2Scale(&spShip->velCurr, &spShip->velCurr, 0.99f);
 	}
 
@@ -542,7 +543,7 @@ static void GameStateAsteroidsCollision(void)
 						AEVec2Zero(&pInst1->velCurr);
 						onValueChange = true;//change the bool so that the value change will show on terminal
 						gameObjInstDestroy(pInst);//destroy the asteroid
-						if (sShipLives <= 0)//if its zero lives
+						if (sShipLives < 0)//if its zero lives
 						{
 							gameover = true;//game over is true
 						}
