@@ -1,11 +1,11 @@
 /******************************************************************************/
 /*!
-\file		Collision.h
-\author 	Keith Chng
-\par    	email: n.chng\@digipen.edu
-\date   	10/2/21
-\brief		Header file for AABB collision function to see if 2 instances/entity are colliding
-			statically or dynamically
+	\file		Collision.h
+	\author 	Keith Chng
+	\par    	email: n.chng\@digipen.edu
+	\date   	10/2/21
+	\brief		Header file for AABB collision function to see if 2 instances/entity are colliding
+				statically or dynamically
 
 Copyright (C) 2021 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the

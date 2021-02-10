@@ -1,10 +1,10 @@
 /******************************************************************************/
 /*!
-\file		GameState_Asteroids.h
-\author 	Keith Chng
-\par    	email: n.chng\@digipen.edu
-\date   	10/2/21
-\brief		This is the main game state file where it runs the game asteroids. 
+	\file		GameState_Asteroids.h
+	\author 	Keith Chng
+	\par    	email: n.chng\@digipen.edu
+	\date   	10/2/21
+	\brief		This is the main game state file where it runs the game asteroids. 
 
 Copyright (C) 2021 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the

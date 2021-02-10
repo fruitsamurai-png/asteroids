@@ -1,10 +1,11 @@
 /******************************************************************************/
 /*!
-\file		Main.cpp
-\author 	Keith Chng
-\par    	email: n.chng\@digipen.edu
-\date   	10/2/21
-\brief		Main game function that consist of the game state manager and game state loop
+	\file		Main.cpp
+	\author 	Keith Chng
+	\par    	email: n.chng\@digipen.edu
+	\date   	10/2/21
+	\brief		Main game function that consist 
+				of the game state manager and game state loop
 
 Copyright (C) 2021 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the

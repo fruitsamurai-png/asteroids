@@ -5,6 +5,7 @@
 	\par    	email: n.chng\@digipen.edu
 	\date   	10/2/21
 	\brief		This is the main game state file where it runs the game asteroids.
+
 Copyright (C) 2021 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the
 prior written consent of DigiPen Institute of Technology is prohibited.
@@ -128,6 +129,7 @@ void					gameObjInstDestroy(GameObjInst * pInst);
 static void				GameStateAsteroidsCreate(void);//helper function to intialised the asteroid entity with randomised variables
 /******************************************************************************/
 /*!
+*	\brief
 	"Load" function of this state
 */
 /******************************************************************************/
@@ -175,7 +177,7 @@ void GameStateAsteroidsLoad(void)
 	// ======================================
 
 	pObj		= sGameObjList + sGameObjNum++;//move the struct pointer to have the mesh of the ship
-	pObj->type	= TYPE_SHIP;
+	pObj->type	= TYPE_SHIP;//set the type of object
 
 	AEGfxMeshStart();
 	AEGfxTriAdd(
@@ -238,6 +240,7 @@ void GameStateAsteroidsLoad(void)
 
 /******************************************************************************/
 /*!
+*	\brief
 	"Initialize" function of this state
 */
 /******************************************************************************/
@@ -272,6 +275,7 @@ void GameStateAsteroidsInit(void)
 
 /******************************************************************************/
 /*!
+*	\brief
 	Score function to print onto the game screen and terminal
 */
 /******************************************************************************/
@@ -331,6 +335,7 @@ static void GameStateAsteroidsScore(void)
 }
 /******************************************************************************/
 /*!
+*	\brief
 	Helper function to create randomised asteroid spawns
 */
 /******************************************************************************/
@@ -365,6 +370,7 @@ static void GameStateAsteroidsCreate(void)
 }
 /******************************************************************************/
 /*!
+*	\brief
 	Input function to control the ship in the state
 */
 /******************************************************************************/
@@ -418,6 +424,7 @@ static void GameStateAsteroidsInput(void)
 }
 /******************************************************************************/
 /*!
+*	\brief
 	Physics function in the state
 */
 /******************************************************************************/
@@ -457,6 +464,7 @@ static void GameStateAsteroidsPhysics(void)
 }
 /******************************************************************************/
 /*!
+*	\brief
 	Wrapping function in the state so that each entity will respond accordingly 
 	when going through the screen of the game
 */
@@ -503,6 +511,7 @@ static void GameStateAsteroidsWrap(void)
 }
 /******************************************************************************/
 /*!
+*	\brief
 	Collision function for the game state
 */
 /******************************************************************************/
@@ -564,6 +573,7 @@ static void GameStateAsteroidsCollision(void)
 }
 /******************************************************************************/
 /*!
+*	\brief
 	Matrix function for the game state
 */
 /******************************************************************************/
@@ -590,6 +600,7 @@ static void GameStateAsteroidsMatrix(void)
 }
 /******************************************************************************/
 /*!
+*	\brief
 	"Update" function of this state
 */
 /******************************************************************************/
@@ -624,6 +635,7 @@ void GameStateAsteroidsUpdate(void)
 
 /******************************************************************************/
 /*!
+*	\brief
 	"Draw" function of this state
 */
 /******************************************************************************/
@@ -649,13 +661,13 @@ void GameStateAsteroidsDraw(void)
 			AEGfxMeshDraw(pInst->pObject->pMesh, AE_GFX_MDM_TRIANGLES);
 	}
 	
-	//You can replace this condition/variable by your own data.
 	//The idea is to display any of these variables/strings whenever a change in their value happens
 	GameStateAsteroidsScore();
 }
 
 /******************************************************************************/
 /*!
+*	\brief
 	"Free" function of this state
 */
 /******************************************************************************/
@@ -669,11 +681,12 @@ void GameStateAsteroidsFree(void)
 		gameObjInstDestroy(pInst);	
 	}
 	gameover = false;//reset the gameover bool
-	AEGfxDestroyFont(Text);//free the font
+	
 }
 
 /******************************************************************************/
 /*!
+*	\brief
 	"Unload" function of this state
 */
 /******************************************************************************/
@@ -689,10 +702,12 @@ void GameStateAsteroidsUnload(void)
 		if(pObj->pTex)
 			AEGfxTextureUnload(pObj->pTex);
 	}
+	AEGfxDestroyFont(Text);//free the font
 }
 
 /******************************************************************************/
 /*!
+*	\brief
 	Function to initialise each entity in the state 
 */
 /******************************************************************************/
@@ -734,6 +749,7 @@ GameObjInst * gameObjInstCreate(unsigned long type,
 
 /******************************************************************************/
 /*!
+*	\brief
 	Function to destroy each entity in the state 
 */
 /******************************************************************************/

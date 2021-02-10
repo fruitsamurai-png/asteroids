@@ -1,10 +1,11 @@
 /******************************************************************************/
 /*!
-\file		GameStateMgr.cpp
-\author 	DigiPen
-\par    	email: digipen\@digipen.edu
-\date   	January 01, 2021
-\brief		This is the game state manager where it controls each game state
+	\file		GameStateMgr.cpp
+	\author 	DigiPen
+	\par    	email: digipen\@digipen.edu
+	\date   	January 01, 2021
+	\brief		This is the game state manager where it controls each game state
+				via function pointers
 
 Copyright (C) 2021 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the
@@ -33,7 +34,11 @@ void (*GameStateUnload)()	= 0;
 
 /******************************************************************************/
 /*!
-
+	    \brief
+        Init function for the game state manager where it reset all the variables
+		to the input game state and it calls the update function to set function pointers
+        \param gameStateInit
+		input variable to reset all the gamestates to
 */
 /******************************************************************************/
 void GameStateMgrInit(unsigned int gameStateInit)
@@ -52,7 +57,9 @@ void GameStateMgrInit(unsigned int gameStateInit)
 
 /******************************************************************************/
 /*!
-
+	\brief
+     Update function for the game state manager to set all the function pointers
+	for the game state
 */
 /******************************************************************************/
 void GameStateMgrUpdate()

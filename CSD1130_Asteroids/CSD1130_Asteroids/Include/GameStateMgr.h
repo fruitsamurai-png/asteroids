@@ -1,10 +1,10 @@
 /******************************************************************************/
 /*!
-\file		GameStateMgr.h
-\author 	Keith Chng
-\par    	email: n.chng\@digipen.edu
-\date   	10/2/21
-\brief		This is the game state manager where it controls each game state
+	\file		GameStateMgr.h
+	\author 	Keith Chng
+	\par    	email: n.chng\@digipen.edu
+	\date   	10/2/21
+	\brief		This is the game state manager where it controls each game state
 
 Copyright (C) 2021 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the

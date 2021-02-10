@@ -1,10 +1,11 @@
 /******************************************************************************/
 /*!
-\file		Collision.cpp
-\author 	Keith Chng
-\par    	email: n.chng\@digipen.edu
-\date   	10/2/21
-\brief	AABB collision function to see if 2 instances/entity are colliding statically or dynamically
+	\file		Collision.cpp
+	\author 	Keith Chng
+	\par    	email: n.chng\@digipen.edu
+	\date   	10/2/21
+	\brief		AABB collision function to see if 2 instances/entity are 
+				colliding statically or dynamically
 
 Copyright (C) 2021 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the
@@ -16,7 +17,15 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 
 /**************************************************************************/
 /*!
-		function to check if 2 instances/entity are colliding statically or dynamically
+		\brief
+        function to check if 2 instances/entity are colliding statically or dynamically
+        \param  aabb1
+		\param	aabb2
+		\param	vel1
+		\param	vel2
+		velocities and aabb collision box for the 2 instances
+        \return bool
+		bool to see if they collide
 	*/
 /**************************************************************************/
 bool CollisionIntersection_RectRect(const AABB & aabb1, const AEVec2 & vel1, 
@@ -27,8 +36,8 @@ bool CollisionIntersection_RectRect(const AABB & aabb1, const AEVec2 & vel1,
 	{
 		return false;//if the second min point is more than the first max point or 
 	}
-	f32 tFirst = 0;
-	f32 tLast = g_dt;
+	f32 tFirst = 0;//initialise the first time to zero
+	f32 tLast = g_dt;//set the last time to delta
 	AEVec2 vb;//resultant vector
 	AEVec2 v1 = vel1;
 	AEVec2 v2 = vel2;
