@@ -6,7 +6,7 @@
 	\date   	10/2/21
 	\brief		
 
-Copyright (C) 2020 DigiPen Institute of Technology.
+Copyright (C) 2021 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the
 prior written consent of DigiPen Institute of Technology is prohibited.
  */
@@ -29,10 +29,10 @@ const float			SHIP_ACCEL_FORWARD		= 60.0f;		// ship forward acceleration (in m/s
 const float			SHIP_ACCEL_BACKWARD		= 60.0f;		// ship backward acceleration (in m/s^2)
 const float			SHIP_ROT_SPEED			= (2.0f * PI);	// ship rotation speed (degree/second)
 
-const unsigned int	ASTEROID_NUM			= 4;
-const float			ASTEROID_SIZE			= 64.0f;
-const float			ASTEROID_BASE			= 20.0f;
-const float			ASTEROID_SPEED			= 32.0f;
+const unsigned int	ASTEROID_NUM			= 4;//number of initial asteroid to spawn
+const float			ASTEROID_SIZE			= 64.0f;//size multiplier for randomised asteroid spawn
+const float			ASTEROID_BASE			= 20.0f;//base value for asteroid size and speed
+const float			ASTEROID_SPEED			= 32.0f;//speed multiplier for randomised asteroid spawn
 
 const float			BULLET_SIZE				= 15.0f;//scale of bullet 
 const float			BULLET_SPEED			= 10.0f;// bullet speed (m/s)
@@ -271,7 +271,11 @@ void GameStateAsteroidsInit(void)
 	gameover = false;
 }
 
-
+/******************************************************************************/
+/*!
+	Score function to print onto the game screen and terminal
+*/
+/******************************************************************************/
 static void GameStateAsteroidsScore(void)
 {
 	char strBuffer[1024];
@@ -320,6 +324,11 @@ static void GameStateAsteroidsScore(void)
 		onValueChange = false;
 	}
 }
+/******************************************************************************/
+/*!
+	Helper function to create randomised asteroid spawns
+*/
+/******************************************************************************/
 static void GameStateAsteroidsCreate(void)
 {
 	AEVec2 vel, pos;
@@ -349,6 +358,11 @@ static void GameStateAsteroidsCreate(void)
 	size = (ASTEROID_SIZE * AERandFloat() + ASTEROID_BASE);
 	gameObjInstCreate(TYPE_ASTEROID, size, &pos, &vel, dir);
 }
+/******************************************************************************/
+/*!
+	Input function to control the ship in the state
+*/
+/******************************************************************************/
 static void GameStateAsteroidsInput(void)
 {
 	if (AEInputCheckCurr(AEVK_UP) || AEInputCheckCurr(AEVK_W))
@@ -396,6 +410,11 @@ static void GameStateAsteroidsInput(void)
 	}
 	
 }
+/******************************************************************************/
+/*!
+	Physics function in the state
+*/
+/******************************************************************************/
 static void GameStateAsteroidsPhysics(void)
 {
 	AEVec2 added;
@@ -430,6 +449,12 @@ static void GameStateAsteroidsPhysics(void)
 	}
 
 }
+/******************************************************************************/
+/*!
+	Wrapping function in the state so that each entity will respond accordingly 
+	when going through the screen of the game
+*/
+/******************************************************************************/
 static void GameStateAsteroidsWrap(void)
 {
 	for (unsigned long i = 0; i < GAME_OBJ_INST_NUM_MAX; i++)
@@ -470,6 +495,11 @@ static void GameStateAsteroidsWrap(void)
 		}
 	}
 }
+/******************************************************************************/
+/*!
+	Collision function for the game state
+*/
+/******************************************************************************/
 static void GameStateAsteroidsCollision(void)
 {
 	for (unsigned long i = 0; i < GAME_OBJ_INST_NUM_MAX; i++)
@@ -528,6 +558,11 @@ static void GameStateAsteroidsCollision(void)
 	}
 
 }
+/******************************************************************************/
+/*!
+	Matrix function for the game state
+*/
+/******************************************************************************/
 static void GameStateAsteroidsMatrix(void)
 {
 	for (unsigned long i = 0; i < GAME_OBJ_INST_NUM_MAX; i++)

@@ -1,12 +1,12 @@
 /******************************************************************************/
 /*!
 \file		Main.cpp
-\author 	DigiPen
-\par    	email: digipen\@digipen.edu
-\date   	January 01, 20xx
+\author 	Keith Chng
+\par    	email: n.chng\@digipen.edu
+\date   	10/2/21
 \brief
 
-Copyright (C) 20xx DigiPen Institute of Technology.
+Copyright (C) 2021 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the
 prior written consent of DigiPen Institute of Technology is prohibited.
  */
