@@ -16,7 +16,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 
 /**************************************************************************/
 /*!
-
+		function to check if 2 instances/entity are colliding statically or dynamically
 	*/
 /**************************************************************************/
 bool CollisionIntersection_RectRect(const AABB & aabb1, const AEVec2 & vel1, 
@@ -38,11 +38,11 @@ bool CollisionIntersection_RectRect(const AABB & aabb1, const AEVec2 & vel1,
 		if (aabb1.min.x > aabb2.max.x)return false;
 		if (aabb1.max.x < aabb2.min.x)
 		{
-			tFirst = AEMax((aabb1.max.x - aabb2.min.x) / vb.x,tFirst);
+			tFirst = AEMax((aabb1.max.x - aabb2.min.x) / vb.x,tFirst);//choose between which time is higher, the calculated tfirst or the previous tfirst
 		}
 		if (aabb1.min.x < aabb2.max.x)
 		{
-			tLast = AEMin((aabb1.min.x - aabb2.max.x) / vb.x,tLast);
+			tLast = AEMin((aabb1.min.x - aabb2.max.x) / vb.x,tLast);//choose between which time is low, the calculated tfirst or the previous tfirst
 		}
 	}
 	if (vb.x > 0)//case 2 3 for x axis,positive vel which means going right
@@ -82,7 +82,7 @@ bool CollisionIntersection_RectRect(const AABB & aabb1, const AEVec2 & vel1,
 		}
 	}
 
-	if (tFirst > tLast)return false;//
+	if (tFirst > tLast)return false;
 		
 	return true;
 }

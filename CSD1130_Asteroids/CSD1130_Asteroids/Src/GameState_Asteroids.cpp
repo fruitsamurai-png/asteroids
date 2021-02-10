@@ -115,7 +115,7 @@ static long					sShipLives;									// The number of lives left
 
 // the score = number of asteroid destroyed
 static unsigned long		sScore;										// Current score
-s8							Text;										//Text to display on screen
+s8							Text=0;										//Text to display on screen
 
 
 // ---------------------------------------------------------------------------
@@ -150,7 +150,7 @@ void GameStateAsteroidsLoad(void)
 
 	//load the font texture
 	Text = AEGfxCreateFont("../Resources/Fonts/Arial Italic.ttf",24);
-	AE_ASSERT_MESG(Text, "fail to create object!!");
+	AE_ASSERT_MESG(Text, "fail to create Font!!");
 	// ======================================
 	// create the Background mesh and texture
 	// ======================================
