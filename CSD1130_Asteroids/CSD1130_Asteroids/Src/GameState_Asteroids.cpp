@@ -1,12 +1,12 @@
 /******************************************************************************/
 /*!
-\file		GameState_Asteroids.cpp
-\author 	DigiPen
-\par    	email: digipen\@digipen.edu
-\date   	January 01, 20xx
-\brief
+	\file		GameState_Asteroids.cpp
+	\author 	Chng Nai Wei Keith
+	\par    	email: n.chng\@digipen.edu
+	\date   	10/2/21
+	\brief		
 
-Copyright (C) 20xx DigiPen Institute of Technology.
+Copyright (C) 2020 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the
 prior written consent of DigiPen Institute of Technology is prohibited.
  */
@@ -40,8 +40,8 @@ const float			BULLET_SPEED			= 10.0f;// bullet speed (m/s)
 
 extern float		g_dt;//delta time called from main.cpp
 //booleans
-static bool			gameover =false;
-static bool			onValueChange = true;
+static bool			gameover =false;		//condition if lives less than 0 or if it hits the high score of 5000
+static bool			onValueChange = true;//condition to print the score or live updates on the console
 // -----------------------------------------------------------------------------
 enum TYPE
 {
@@ -70,7 +70,7 @@ struct GameObj
 {
 	unsigned long		type;		// object type
 	AEGfxVertexList *	pMesh;		// This will hold the triangles which will form the shape of the object
-	AEGfxTexture*		pTex;
+	AEGfxTexture*		pTex;		// This will hold the textures to lay on the mesh
 };
 
 // ---------------------------------------------------------------------------
@@ -87,9 +87,6 @@ struct GameObjInst
 	AABB				boundingBox;// object bouding box that encapsulates the object
 	AEMtx33				transform;	// object transformation matrix: Each frame, 
 									// calculate the object instance's transformation matrix and save it here
-
-	//void				(*pfUpdate)(void);
-	//void				(*pfDraw)(void);
 };
 
 /******************************************************************************/
@@ -129,7 +126,7 @@ GameObjInst *			gameObjInstCreate (unsigned long type, float scale,
 										   AEVec2 * pPos, AEVec2 * pVel, float dir);
 void					gameObjInstDestroy(GameObjInst * pInst);
 
-static void				GameStateAsteroidsCreate(void);
+static void				GameStateAsteroidsCreate(void);//helper function to intialised the asteroid entity with randomised variables
 /******************************************************************************/
 /*!
 	"Load" function of this state
@@ -261,24 +258,68 @@ void GameStateAsteroidsInit(void)
 			AEVec2Set(&vel, ASTEROID_SPEED * AERandFloat() + ASTEROID_BASE, ASTEROID_SPEED * AERandFloat() + ASTEROID_BASE);
 			f32 pos1 = AERandFloat() > 0.5f ? AEGfxGetWinMaxX() + ASTEROID_BASE : AEGfxGetWinMinX() - ASTEROID_BASE;
 			f32 pos2 = AERandFloat() > 0.5f ? AEGfxGetWinMaxY() + ASTEROID_BASE : AEGfxGetWinMinY() - ASTEROID_BASE;
-			//AEVec2Set(&pos, 0.5f * AEGetWindowWidth() * AERandFloat(), (0.5f * (AEGetWindowHeight() * AERandFloat())));
 			AEVec2Scale(&vel, &vel, polarity);
-			AEVec2Set(&pos, pos1 *0.75, pos2  * 0.75);
-			dir = 2 * PI * AERandFloat();
+			AEVec2Set(&pos, pos1 *0.75f, pos2  * 0.75f);
+			dir = 2*PI*AERandFloat();
 			size = (ASTEROID_SIZE * AERandFloat()+ ASTEROID_BASE);
 			asteroid[i] = gameObjInstCreate(TYPE_ASTEROID, size, &pos, &vel, dir);
 			AE_ASSERT(asteroid[i]);
 	}
-	// reset the score and the number of ships
+	// reset the score and the number of ships,also reset the gameover boolean to false
 	sScore      = 0;
 	sShipLives  = SHIP_INITIAL_NUM;
+	gameover = false;
 }
 
-/******************************************************************************/
-/*!
-	"Update" function of this state
-*/
-/******************************************************************************/
+
+static void GameStateAsteroidsScore(void)
+{
+	char strBuffer[1024];
+	char ScoreLiveBuffer[1024];
+	char GameBuffer[1024];
+	char RestartBuffer[1024];
+
+	sprintf_s(ScoreLiveBuffer, "Score: %-80d Ship Left: %d", sScore, sShipLives);
+	AEGfxPrint(Text, ScoreLiveBuffer, -1.0f, 0.9f, 1.0f, 1.0f, 1.0f, 1.0f);
+	if (gameover)
+	{
+		if (sShipLives <= 0)
+		{
+			sprintf_s(GameBuffer, "       GAME OVER       \n");
+
+		}
+		if (sScore == 5000)
+		{
+			sprintf_s(GameBuffer, "       YOU ROCK       \n");
+		}
+		sprintf_s(RestartBuffer, "       PRESS R TO RESTART       \n");
+		AEGfxPrint(Text, GameBuffer, -0.3f, 0.1f, 1.1f, 1.0f, 1.0f, 1.0f);
+		AEGfxPrint(Text, RestartBuffer, -0.5f, -0.1f, 1.1f, 1.0f, 1.0f, 1.0f);
+		if (AEInputCheckTriggered(AEVK_R))
+		{
+			gGameStateNext = GS_RESTART;
+		}
+	}
+	if (onValueChange)
+	{
+		sprintf_s(strBuffer, "Score: %d", sScore);
+		printf("%s \n", strBuffer);
+
+		sprintf_s(strBuffer, "Ship Left: %d", sShipLives >= 0 ? sShipLives : 0);
+		printf("%s \n", strBuffer);
+
+		// display the game over message
+		if (gameover)
+		{
+			printf("       GAME OVER       \n");
+		}
+		if (sScore == 5000)
+		{
+			printf("       YOU ROCK       \n");
+		}
+		onValueChange = false;
+	}
+}
 static void GameStateAsteroidsCreate(void)
 {
 	AEVec2 vel, pos;
@@ -286,10 +327,11 @@ static void GameStateAsteroidsCreate(void)
 	f32 polarity = AERandFloat()> 0.5f ? -1.0f : 1.0f;
 	f32 pos1 = AERandFloat() > 0.5f ? AEGfxGetWinMaxX()+ASTEROID_BASE : AEGfxGetWinMinX() - ASTEROID_BASE;
 	f32 pos2 = AERandFloat() > 0.5f ? AEGfxGetWinMaxY() + ASTEROID_BASE : AEGfxGetWinMinY() - ASTEROID_BASE;
-	f32 half1 = AERandFloat() > 0.5f ? 0.0f : 1.0f;
-	AEVec2Set(&pos, pos1*half1, pos2);
+	f32 rand1 = AERandFloat() > 0.5f ? 0.0f : 1.0f;
+	AEVec2Set(&pos, pos1*rand1, pos2);
 	AEVec2Set(&vel, ASTEROID_SPEED * AERandFloat() + ASTEROID_BASE, ASTEROID_SPEED * AERandFloat() + ASTEROID_BASE);
 	dir = 2*PI*AERandFloat();
+
 	AEVec2Scale(&pos, &pos, polarity);
 	AEVec2Scale(&vel, &vel, polarity);
 	if (sScore>= 1500)
@@ -372,7 +414,6 @@ static void GameStateAsteroidsPhysics(void)
 			AEVec2Set(&added, -cosf(pInst->dirCurr), sinf(pInst->dirCurr));
 			AEVec2ScaleAdd(&added, &pInst->velCurr, &added,g_dt);//YOU MAY NEED TO CHANGE/REPLACE THIS LINE
 			AEVec2Add(&pInst->posCurr, &pInst->posCurr, &added);//YOU MAY NEED TO CHANGE/REPLACE THIS LINE
-			pInst->dirCurr += 0.001f;
 		}
 		if (pInst->pObject->type == TYPE_BULLET)
 		{
@@ -380,6 +421,7 @@ static void GameStateAsteroidsPhysics(void)
 			AEVec2Set(&angle, cosf(pInst->dirCurr) * BULLET_SPEED, sinf(pInst->dirCurr) * BULLET_SPEED);
 			AEVec2Add(&pInst->posCurr, &pInst->posCurr, &angle);
 		}
+
 		AEVec2Set(&pInst->boundingBox.min, -0.5f * pInst->scale, -0.5f * pInst->scale);
 		AEVec2Add(&pInst->boundingBox.min, &pInst->posCurr, &pInst->boundingBox.min);
 		AEVec2Set(&pInst->boundingBox.max, 0.5f * pInst->scale, 0.5f * pInst->scale);
@@ -477,6 +519,7 @@ static void GameStateAsteroidsCollision(void)
 						{
 							GameStateAsteroidsCreate();
 						}
+						if (sScore >= 5000)gameover = true;
 					}
 				}
 
@@ -491,11 +534,7 @@ static void GameStateAsteroidsMatrix(void)
 	{
 		GameObjInst* pInst = sGameObjInstList + i;
 		AEMtx33		 trans, rot, scale;
-		//AEMtx33 result;
-		/*UNREFERENCED_PARAMETER(trans);
-		UNREFERENCED_PARAMETER(rot);
-		UNREFERENCED_PARAMETER(scale);*/
-
+	
 		// skip non-active object
 		if ((pInst->flag & FLAG_ACTIVE) == 0)
 			continue;
@@ -510,12 +549,17 @@ static void GameStateAsteroidsMatrix(void)
 		AEMtx33Concat(&(pInst->transform), &trans, &pInst->transform);
 	}
 }
+/******************************************************************************/
+/*!
+	"Update" function of this state
+*/
+/******************************************************************************/
 void GameStateAsteroidsUpdate(void)
 {
 		// =========================
 		// update according to input
 		// =========================
-		if (gameover == false && sScore < 5000)
+		if (gameover == false)
 		{
 			GameStateAsteroidsInput();
 		}
@@ -529,7 +573,7 @@ void GameStateAsteroidsUpdate(void)
 		// ====================
 		// check for collision
 		// ====================
-		if (gameover == false && sScore < 5000)
+		if (gameover == false)
 		{
 			GameStateAsteroidsCollision();
 		}
@@ -541,14 +585,11 @@ void GameStateAsteroidsUpdate(void)
 
 /******************************************************************************/
 /*!
-	
+	"Draw" function of this state
 */
 /******************************************************************************/
 void GameStateAsteroidsDraw(void)
 {
-	char strBuffer[1024];
-	char ScoreLiveBuffer[1024];
-	char GameBuffer[1024];
 
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
@@ -561,52 +602,22 @@ void GameStateAsteroidsDraw(void)
 		// skip non-active object
 		if ((pInst->flag & FLAG_ACTIVE)==0)
 			continue;
+		// Set the current object instance's Texture using "AEGfxTextureSet" 
 			AEGfxTextureSet(pInst->pObject->pTex, 0, 0);
-			AEGfxSetTransform(pInst->transform.m);
 		// Set the current object instance's transform matrix using "AEGfxSetTransform"
+			AEGfxSetTransform(pInst->transform.m);
 		// Draw the shape used by the current object instance using "AEGfxMeshDraw"
 			AEGfxMeshDraw(pInst->pObject->pMesh, AE_GFX_MDM_TRIANGLES);
 	}
 	
 	//You can replace this condition/variable by your own data.
 	//The idea is to display any of these variables/strings whenever a change in their value happens
-		sprintf_s(ScoreLiveBuffer, "Score: %-80d Ship Left: %d", sScore, sShipLives);
-		AEGfxPrint(Text, ScoreLiveBuffer, -1.0f, 0.9f, 1.0f, 1.0f, 1.0f, 1.0f);
-		if (gameover)
-		{
-			sprintf_s(GameBuffer,"       GAME OVER       \n");
-			AEGfxPrint(Text, GameBuffer, -0.3f, 0.0f, 1.1f, 1.0f, 1.0f, 1.0f);
-		}
-		if (sScore == 5000)
-		{
-			sprintf_s(GameBuffer, "       YOU ROCK       \n");
-			AEGfxPrint(Text, GameBuffer, -0.3f, 0.0f, 1.1f, 1.0f, 1.0f, 1.0f);
-		}
-	if(onValueChange)
-	{
-		sprintf_s(strBuffer, "Score: %d", sScore);
-		printf("%s \n", strBuffer);
-
-		sprintf_s(strBuffer, "Ship Left: %d", sShipLives >= 0 ? sShipLives : 0);
-		printf("%s \n", strBuffer);
-
-		// display the game over message
-		if (gameover)
-		{
-			printf("       GAME OVER       \n");
-		}
-		if (sScore == 5000)
-		{
-			printf("       YOU ROCK       \n");
-		}
-		onValueChange = false;
-	}
-	AEGfxPrint(Text, strBuffer, 0.0f, 0.0f, 2.0f, 1.0f, 1.0f, 1.0f);
+	GameStateAsteroidsScore();
 }
 
 /******************************************************************************/
 /*!
-	
+	"Free" function of this state
 */
 /******************************************************************************/
 void GameStateAsteroidsFree(void)
@@ -616,14 +627,14 @@ void GameStateAsteroidsFree(void)
 	{
 		GameObjInst* pInst = sGameObjInstList + i;
 
-		gameObjInstDestroy(pInst);
-		
+		gameObjInstDestroy(pInst);	
 	}
+	gameover = false;
 }
 
 /******************************************************************************/
 /*!
-	
+	"Unload" function of this state
 */
 /******************************************************************************/
 void GameStateAsteroidsUnload(void)
@@ -643,7 +654,7 @@ void GameStateAsteroidsUnload(void)
 
 /******************************************************************************/
 /*!
-	
+	Function to initialise each entity in the state 
 */
 /******************************************************************************/
 GameObjInst * gameObjInstCreate(unsigned long type, 
@@ -684,7 +695,7 @@ GameObjInst * gameObjInstCreate(unsigned long type,
 
 /******************************************************************************/
 /*!
-	
+	Function to destroy each entity in the state 
 */
 /******************************************************************************/
 void gameObjInstDestroy(GameObjInst * pInst)
